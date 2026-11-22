@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project 03: Multi-Area OSPF &amp; ACL Campus Backbone | Mitul Rahman</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    body {
+      background-color: #070B14;
+      color: #E2E8F0;
+      overflow-x: hidden;
+    }
+    .cyber-glass {
+      background: rgba(15, 23, 42, 0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.65);
+    }
+    .cyber-grid-bg {
+      background-image:
+        linear-gradient(to right, rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(56, 189, 248, 0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    @keyframes packetFlow {
+      0% { stroke-dashoffset: 48; }
+      100% { stroke-dashoffset: 0; }
+    }
+    .packet-line {
+      stroke-dasharray: 8 8;
+      animation: packetFlow 1.6s linear infinite;
+    }
+  </style>
+</head>
+<body class="font-sans antialiased cyber-grid-bg min-h-screen flex flex-col">
+
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-3 pointer-events-none"></div>
+
+  <header class="sticky top-0 z-40 border-b border-sky-400/15 bg-[#070B14]/90 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5 sm:gap-3">
+        <a href="index.html#labs" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-cyan-400 text-xs font-mono text-cyan-300 flex items-center gap-2 transition-all">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>Portfolio</span>
+        </a>
+        <a href="network-projects.html?project=2" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-emerald-400 text-xs font-mono text-emerald-300 hidden sm:flex items-center gap-1.5 transition-all">
+          <i class="fa-solid fa-layer-group"></i>
+          <span>All 5 Projects</span>
+        </a>
+        <span class="font-mono text-xs sm:text-sm font-bold text-white hidden md:inline">
+          Mitul Rahman // Project 03 of 05
+        </span>
+      </div>
+
+      <a href="index.html#contact" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-cyan-500 to-sky-500 text-slate-950 hover:from-cyan-400 hover:to-sky-400 transition-all flex items-center gap-2">
+        <i class="fa-solid fa-paper-plane"></i>
+        <span>Hire Me</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+
+    <nav aria-label="Switch Project Page" class="cyber-glass rounded-2xl p-3.5">
+      <div class="text-[11px] font-mono uppercase text-slate-400 mb-2.5 flex items-center justify-between">
+        <span>// PROJECT_PAGES (01 — 05)</span>
+        <span class="text-cyan-400">ACTIVE: 03</span>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+        <a href="project-01-enterprise-vlan-ospf.html" class="px-3 py-2 rounded-xl font-mono text-xs bg-slate-900 text-slate-300 border border-slate-700/80 hover:border-cyan-400/50 truncate transition-all">
+          01. Enterprise Multi-Router &amp; VLAN
+        </a>
+        <a href="project-02-mikrotik-dual-wan-qos.html" class="px-3 py-2 rounded-xl font-mono text-xs bg-slate-900 text-slate-300 border border-slate-700/80 hover:border-cyan-400/50 truncate transition-all">
+          02. MikroTik Dual-WAN &amp; QoS
+        </a>
+        <a href="project-03-ospf-acl-campus-backbone.html" class="px-3 py-2 rounded-xl font-mono text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-400 truncate">
+          03. Multi-Area OSPF &amp; ACL
+        </a>
+        <a href="project-04-linux-dhcp-dns-dmz.html" class="px-3 py-2 rounded-xl font-mono text-xs bg-slate-900 text-slate-300 border border-slate-700/80 hover:border-cyan-400/50 truncate transition-all">
+          04. Linux DHCP, DNS &amp; DMZ
+        </a>
+        <a href="project-05-wireshark-powershell-diagnostics.html" class="px-3 py-2 rounded-xl font-mono text-xs bg-slate-900 text-slate-300 border border-slate-700/80 hover:border-cyan-400/50 truncate transition-all">
+          05. Wireshark &amp; PowerShell
+        </a>
+      </div>
+    </nav>
+
+    <section class="cyber-glass rounded-2xl p-6 sm:p-8">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <span class="font-mono text-xs px-3 py-1 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
+          PROJECT 03 • DYNAMIC ROUTING &amp; ACCESS SECURITY
+        </span>
+        <span class="font-mono text-xs text-emerald-400">
+          Cisco IOS • OSPF Area 0/10/20 • Route Summarization • Extended ACL
+        </span>
+      </div>
+      <h1 class="text-2xl sm:text-4xl font-extrabold text-white mb-3">
+        Multi-Area OSPF &amp; ACL Campus Backbone
+      </h1>
+      <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-4xl">
+        Designed a multi-area OSPF campus routing topology with Area 0 backbone, Area 10 and Area 20 campus segments, route summarization, MD5 authentication, and extended ACL policies to protect management and administrative networks.
+      </p>
+    </section>
+
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+      <div class="lg:col-span-7 cyber-glass rounded-2xl p-5 sm:p-6 flex flex-col justify-between">
+        <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-800">
+          <span class="font-mono text-xs text-cyan-300 flex items-center gap-2">
+            <i class="fa-solid fa-diagram-project"></i>
+            <span>NETWORK DESIGN TOPOLOGY</span>
+          </span>
+          <span class="font-mono text-xs text-slate-400">Click any node to inspect CLI</span>
+        </div>
+
+        <div class="w-full overflow-x-auto py-2">
+          <svg viewBox="0 0 640 330" class="w-full h-auto min-w-[460px] select-none" role="img" aria-label="Multi-Area OSPF and ACL Campus Backbone Topology">
+            <line x1="320" y1="62" x2="170" y2="175" stroke="#06B6D4" stroke-width="2.5" class="packet-line" />
+            <line x1="320" y1="62" x2="470" y2="175" stroke="#10B981" stroke-width="2.5" class="packet-line" />
+            <line x1="170" y1="205" x2="320" y2="285" stroke="#38BDF8" stroke-width="2" class="packet-line" />
+            <line x1="470" y1="205" x2="320" y2="285" stroke="#8B5CF6" stroke-width="2" class="packet-line" />
+
+            <g class="cursor-pointer" onclick="selectNode(0)">
+              <rect id="node-rect-0" x="195" y="14" width="250" height="52" rx="12" fill="#0F172A" stroke="#06B6D4" stroke-width="2.8" />
+              <text x="320" y="36" text-anchor="middle" fill="#FFFFFF" font-family="Inter" font-weight="700" font-size="12">OSPF Area 0 Backbone ABR</text>
+              <text x="320" y="53" text-anchor="middle" fill="#38BDF8" font-family="JetBrains Mono" font-size="10">Route Summarization • Core</text>
+            </g>
+
+            <g class="cursor-pointer" onclick="selectNode(1)">
+              <rect id="node-rect-1" x="50" y="155" width="240" height="52" rx="12" fill="#0F172A" stroke="#334155" stroke-width="2" />
+              <text x="170" y="177" text-anchor="middle" fill="#FFFFFF" font-family="Inter" font-weight="700" font-size="12">Area 10 Academic Block</text>
+              <text x="170" y="194" text-anchor="middle" fill="#34D399" font-family="JetBrains Mono" font-size="10">172.16.10.0/24 • MD5 Auth</text>
+            </g>
+
+            <g class="cursor-pointer" onclick="selectNode(2)">
+              <rect id="node-rect-2" x="350" y="155" width="240" height="52" rx="12" fill="#0F172A" stroke="#334155" stroke-width="2" />
+              <text x="470" y="177" text-anchor="middle" fill="#FFFFFF" font-family="Inter" font-weight="700" font-size="12">Area 20 Guest &amp; Lab Zone</text>
+              <text x="470" y="194" text-anchor="middle" fill="#A78BFA" font-family="JetBrains Mono" font-size="10">172.16.20.0/24 • ACL Filtered</text>
+            </g>
+
+            <g class="cursor-pointer" onclick="selectNode(3)">
+              <rect id="node-rect-3" x="175" y="262" width="290" height="48" rx="12" fill="#0F172A" stroke="#334155" stroke-width="2" />
+              <text x="320" y="283" text-anchor="middle" fill="#FFFFFF" font-family="Inter" font-weight="700" font-size="12">OSPF Neighbor &amp; ACL Verification</text>
+              <text x="320" y="299" text-anchor="middle" fill="#FBBF24" font-family="JetBrains Mono" font-size="10">FULL Adjacency • Route Table Audit</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="mt-4 pt-4 border-t border-slate-800 flex flex-wrap gap-2">
+          <button type="button" id="nbtn-0" onclick="selectNode(0)" class="px-3 py-1.5 rounded-lg text-xs font-mono bg-cyan-500/20 text-cyan-300 border border-cyan-400/60">Area 0 Backbone</button>
+          <button type="button" id="nbtn-1" onclick="selectNode(1)" class="px-3 py-1.5 rounded-lg text-xs font-mono bg-slate-900 text-slate-400 border border-slate-700 hover:border-cyan-400/50">Area 10 Academic</button>
+          <button type="button" id="nbtn-2" onclick="selectNode(2)" class="px-3 py-1.5 rounded-lg text-xs font-mono bg-slate-900 text-slate-400 border border-slate-700 hover:border-cyan-400/50">Area 20 Extended ACL</button>
+          <button type="button" id="nbtn-3" onclick="selectNode(3)" class="px-3 py-1.5 rounded-lg text-xs font-mono bg-slate-900 text-slate-400 border border-slate-700 hover:border-cyan-400/50">Show Commands</button>
+        </div>
+      </div>
+
+      <div class="lg:col-span-5 cyber-glass rounded-2xl p-5 sm:p-6 flex flex-col justify-between bg-slate-950/90">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-800 gap-2">
+            <div>
+              <span id="cli-badge" class="text-[11px] font-mono uppercase px-2.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30"></span>
+              <h2 id="cli-title" class="text-lg sm:text-xl font-bold text-white mt-1.5"></h2>
+            </div>
+            <button type="button" onclick="copyCLI()" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 hover:border-cyan-400 text-xs font-mono text-slate-300 hover:text-cyan-300 flex items-center gap-1.5 transition-all shrink-0">
+              <i class="fa-regular fa-copy"></i> Copy CLI
+            </button>
+          </div>
+
+          <p id="cli-note" class="text-xs sm:text-sm text-slate-400 mb-4 leading-relaxed"></p>
+
+          <div class="rounded-xl bg-[#05080F] border border-slate-800 p-4 font-mono text-xs text-emerald-300 overflow-x-auto leading-relaxed">
+            <pre id="cli-code" class="whitespace-pre-wrap"></pre>
+          </div>
+        </div>
+
+        <div class="mt-5 pt-3 border-t border-slate-800 flex items-center justify-between text-xs font-mono">
+          <a href="project-02-mikrotik-dual-wan-qos.html" class="text-slate-400 hover:text-cyan-300">&larr; Project 02</a>
+          <a href="project-04-linux-dhcp-dns-dmz.html" class="text-cyan-400 hover:underline">Next: Project 04 &rarr;</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="border-t border-slate-800/90 bg-[#05080F] py-6 text-xs font-mono text-slate-400">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <span>&lt;Mitul.Net /&gt; • Multi-Area OSPF &amp; ACL Campus Backbone</span>
+      <span>Mitul Rahman • Dinajpur, Bangladesh</span>
+    </div>
+  </footer>
+
+  <script>
+    const nodesData = [
+      {
+        badge: "OSPF BACKBONE ABR",
+        title: "Area 0 Backbone & Route Summarization",
+        note: "Summarizes non-backbone areas into Area 0 to reduce LSA overhead across campus routers.",
+        code: `router ospf 1
+ router-id 10.255.255.1
+ area 10 range 172.16.10.0 255.255.255.0
+ area 20 range 172.16.20.0 255.255.255.0`
+      },
+      {
+        badge: "OSPF AREA 10 & MD5",
+        title: "Academic Subnet & MD5 Neighbor Auth",
+        note: "Enables OSPF routing and MD5 authentication on campus interfaces.",
+        code: `interface GigabitEthernet0/1
+ ip address 172.16.10.1 255.255.255.0
+ ip ospf message-digest-key 1 md5 CampusOspfKey2026
+ ip ospf authentication message-digest`
+      },
+      {
+        badge: "EXTENDED ACL SECURITY",
+        title: "Restrict Guest/Lab Subnet to Management",
+        note: "Blocks traffic from 172.16.20.0/24 toward management subnet 172.16.99.0/24.",
+        code: `ip access-list extended RESTRICT_GUEST_MGMT
+ deny   ip 172.16.20.0 0.0.0.255 172.16.99.0 0.0.0.255 log
+ permit ip any any`
+      },
+      {
+        badge: "OSPF & ACL VERIFICATION",
+        title: "Neighbor State, Routes & ACL Counters",
+        note: "Verifies FULL OSPF adjacencies, learned OSPF routes, and ACL match counters.",
+        code: `show ip ospf neighbor
+show ip route ospf
+show access-lists RESTRICT_GUEST_MGMT`
+      }
+    ];
+
+    let activeIdx = 0;
+
+    function selectNode(idx) {
+      try {
+        const safeIdx = (typeof idx === 'number' && idx >= 0 && idx < nodesData.length) ? idx : 0;
+        activeIdx = safeIdx;
+        const item = nodesData[safeIdx];
+        if (!item) return;
+
+        const badgeEl = document.getElementById('cli-badge');
+        const titleEl = document.getElementById('cli-title');
+        const noteEl = document.getElementById('cli-note');
+        const codeEl = document.getElementById('cli-code');
+
+        if (badgeEl) badgeEl.textContent = item.badge;
+        if (titleEl) titleEl.textContent = item.title;
+        if (noteEl) noteEl.textContent = item.note;
+        if (codeEl) codeEl.textContent = item.code;
+
+        nodesData.forEach((_, i) => {
+          const rect = document.getElementById(`node-rect-${i}`);
+          if (rect) {
+            rect.setAttribute('stroke', i === safeIdx ? '#06B6D4' : '#334155');
+            rect.setAttribute('stroke-width', i === safeIdx ? '2.8' : '2');
+          }
+          const btn = document.getElementById(`nbtn-${i}`);
+          if (btn) {
+            btn.className = i === safeIdx
+              ? 'px-3 py-1.5 rounded-lg text-xs font-mono bg-cyan-500/20 text-cyan-300 border border-cyan-400/60'
+              : 'px-3 py-1.5 rounded-lg text-xs font-mono bg-slate-900 text-slate-400 border border-slate-700 hover:border-cyan-400/50';
+          }
+        });
+      } catch (_) {
+        showToast('Unable to switch node.');
+      }
+    }
+
+    function copyCLI() {
+      let ta = null;
+      try {
+        const item = nodesData[activeIdx] || nodesData[0];
+        ta = document.createElement('textarea');
+        ta.value = item ? item.code : '';
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        const copied = document.execCommand('copy');
+        showToast(copied ? 'CLI commands copied!' : 'Copy failed');
+      } catch (_) {
+        showToast('Copy failed');
+      } finally {
+        if (ta && ta.parentNode) ta.parentNode.removeChild(ta);
+      }
+    }
+
+    function showToast(msg) {
+      try {
+        const c = document.getElementById('toast-container');
+        if (!c) return;
+        const el = document.createElement('div');
+        el.className = 'pointer-events-auto flex items-center gap-2 px-4 py-3 rounded-xl bg-slate-900/95 border border-emerald-400/50 text-emerald-300 font-mono text-xs shadow-xl';
+        const icon = document.createElement('i');
+        icon.className = 'fa-solid fa-circle-check text-emerald-400';
+        const span = document.createElement('span');
+        span.textContent = String(msg || '');
+        el.appendChild(icon);
+        el.appendChild(span);
+        c.appendChild(el);
+        setTimeout(() => { if (el && el.parentNode) el.remove(); }, 2600);
+      } catch (_) {}
+    }
+
+    window.addEventListener('DOMContentLoaded', () => selectNode(0));
+  </script>
+</body>
+</html>

@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Networking Projects Lab (5 Topologies &amp; CLI) | Mitul Rahman</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    body {
+      background-color: #070B14;
+      color: #E2E8F0;
+      overflow-x: hidden;
+    }
+
+    .cyber-glass {
+      background: rgba(15, 23, 42, 0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.65);
+    }
+
+    .cyber-grid-bg {
+      background-image:
+        linear-gradient(to right, rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(56, 189, 248, 0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    @keyframes packetFlow {
+      0% { stroke-dashoffset: 48; }
+      100% { stroke-dashoffset: 0; }
+    }
+    .packet-line {
+      stroke-dasharray: 8 8;
+      animation: packetFlow 1.6s linear infinite;
+    }
+  </style>
+</head>
+<body class="font-sans antialiased cyber-grid-bg min-h-screen">
+
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-3 pointer-events-none"></div>
+
+  <header class="sticky top-0 z-40 border-b border-sky-400/15 bg-[#070B14]/90 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <a href="index.html#labs" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-cyan-400 text-xs font-mono text-cyan-300 flex items-center gap-2 transition-all">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>Back to Portfolio</span>
+        </a>
+        <span class="font-mono text-xs sm:text-sm font-bold text-white hidden sm:inline">
+          Mitul Rahman // 5 Networking Projects Lab
+        </span>
+      </div>
+
+      <a href="index.html#contact" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-gradient-to-r from-cyan-500 to-sky-500 text-slate-950 hover:from-cyan-400 hover:to-sky-400 transition-all flex items-center gap-2">
+        <i class="fa-solid fa-paper-plane"></i>
+        <span>Hire Me</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+    <section class="mb-8">
+      <div class="font-mono text-xs text-emerald-400 uppercase tracking-wider mb-2">
+        // TOP_VIEW_PROJECT_SELECTOR (5 PROJECTS)
+      </div>
+      <h1 class="text-2xl sm:text-4xl font-extrabold text-white mb-4">
+        Computer Networking Projects — Design &amp; CLI Lab
+      </h1>
+
+      <div id="project-tabs-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3"></div>
+    </section>
+
+    <section class="space-y-6">
+      <div class="cyber-glass rounded-2xl p-5 sm:p-6">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+          <span id="active-proj-badge" class="font-mono text-xs px-2.5 py-0.5 rounded bg-cyan-500/15 text-cyan-300 border border-cyan-500/30"></span>
+          <span id="active-proj-tools" class="font-mono text-xs text-emerald-400"></span>
+        </div>
+        <h2 id="active-proj-title" class="text-xl sm:text-3xl font-bold text-white mb-2"></h2>
+        <p id="active-proj-desc" class="text-sm text-slate-300 leading-relaxed"></p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        <div class="lg:col-span-7 cyber-glass rounded-2xl p-5 sm:p-6 flex flex-col justify-between">
+          <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-800">
+            <span class="font-mono text-xs text-cyan-300 flex items-center gap-2">
+              <i class="fa-solid fa-diagram-project"></i>
+              <span>NETWORK DESIGN TOPOLOGY</span>
+            </span>
+            <span class="font-mono text-xs text-slate-400">Click a node to inspect CLI</span>
+          </div>
+
+          <div class="w-full overflow-x-auto py-2">
+            <svg viewBox="0 0 640 330" class="w-full h-auto min-w-[460px] select-none" role="img" aria-label="Project Network Topology">
+              <line x1="320" y1="62" x2="170" y2="175" stroke="#06B6D4" stroke-width="2.5" class="packet-line" />
+              <line x1="320" y1="62" x2="470" y2="175" stroke="#10B981" stroke-width="2.5" class="packet-line" />
+              <line x1="170" y1="205" x2="320" y2="285" stroke="#38BDF8" stroke-width="2" class="packet-line" />
+              <line x1="470" y1="205" x2="320" y2="285" stroke="#8B5CF6" stroke-width="2" class="packet-line" />
+
+              <g class="cursor-pointer" onclick="selectProjectNode(0)">
+                <rect id="proj-node-0" x="200" y="14" width="240" height="52" rx="12" fill="#0F172A" stroke="#06B6D4" stroke-width="2.5" />
+                <text id="proj-node-0-title" x="320" y="36" text-anchor="middle" fill="#FFFFFF" font-family="Inter" font-weight="700" font-size="12">Node A</text>
+                <text id="proj-node-0-sub" x="320" y="53" text-anchor="middle" fill="#38BDF8" font-family="JetBrains Mono" font-size="10">Subtitle A</text>
+              </g>
+
+              <g class="cursor-pointer" onclick="selectProjectNode(1)">
+                <rect id="proj-node-1" x="55" y="155" width="230" height="52" rx="12" fill="#0F172A" stroke="#334155" stroke-width="2" />
+                <text id="proj-node-1-title" x="170" y="177" text-anchor="middle" fill="#FFFFFF" font-family="Inter" font-weight="700" font-size="12">Node B</text>
+                <text id="proj-node-1-sub" x="170" y="194" text-anchor="middle" fill="#34D399" font-family="JetBrains Mono" font-size="10">Subtitle B</text>
+              </g>
+
+              <g class="cursor-pointer" onclick="selectProjectNode(2)">
+                <rect id="proj-node-2" x="355" y="155" width="230" height="52" rx="12" fill="#0F172A" stroke="#334155" stroke-width="2" />
+                <text id="proj-node-2-title" x="470" y="177" text-anchor="middle" fill="#FFFFFF" font-family="Inter" font-weight="700" font-size="12">Node C</text>
+                <text id="proj-node-2-sub" x="470" y="194" text-anchor="middle" fill="#A78BFA" font-family="JetBrains Mono" font-size="10">Subtitle C</text>
+              </g>
+
+              <g class="cursor-pointer" onclick="selectProjectNode(3)">
+                <rect id="proj-node-3" x="180" y="262" width="280" height="48" rx="12" fill="#0F172A" stroke="#334155" stroke-width="2" />
+                <text id="proj-node-3-title" x="320" y="283" text-anchor="middle" fill="#FFFFFF" font-family="Inter" font-weight="700" font-size="12">Node D</text>
+                <text id="proj-node-3-sub" x="320" y="299" text-anchor="middle" fill="#FBBF24" font-family="JetBrains Mono" font-size="10">Subtitle D</text>
+              </g>
+            </svg>
+          </div>
+
+          <div id="project-node-buttons" class="mt-4 pt-4 border-t border-slate-800 flex flex-wrap gap-2"></div>
+        </div>
+
+        <div class="lg:col-span-5 cyber-glass rounded-2xl p-5 sm:p-6 flex flex-col justify-between bg-slate-950/90">
+          <div>
+            <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-800 gap-2">
+              <div>
+                <span id="node-cli-badge" class="text-[11px] font-mono uppercase px-2.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30"></span>
+                <h3 id="node-cli-title" class="text-lg sm:text-xl font-bold text-white mt-1.5"></h3>
+              </div>
+              <button type="button" onclick="copyActiveProjectCLI()" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 hover:border-cyan-400 text-xs font-mono text-slate-300 hover:text-cyan-300 flex items-center gap-1.5 transition-all shrink-0">
+                <i class="fa-regular fa-copy"></i> Copy CLI
+              </button>
+            </div>
+
+            <p id="node-cli-note" class="text-xs sm:text-sm text-slate-400 mb-4 leading-relaxed"></p>
+
+            <div class="rounded-xl bg-[#05080F] border border-slate-800 p-4 font-mono text-xs text-emerald-300 overflow-x-auto leading-relaxed">
+              <pre id="node-cli-code" class="whitespace-pre-wrap"></pre>
+            </div>
+          </div>
+
+          <div class="mt-5 pt-3 border-t border-slate-800 text-[11px] font-mono text-slate-400 flex items-center justify-between">
+            <span>LAB ENVIRONMENT: Packet Tracer / GNS3 / CLI</span>
+            <span class="text-cyan-400">VERIFIED</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const networkingProjects = [
+      {
+        badge: "PROJECT 01 • ENTERPRISE LAB",
+        title: "Enterprise Multi-Router & VLAN Lab Topology",
+        tools: "Cisco IOS • MikroTik RouterOS • 802.1Q VLAN • OSPF • NAT/PAT • ACL",
+        desc: "Configured multi-area OSPF routing, VLANs, and Inter-VLAN routing across Cisco and MikroTik routers, enforced DHCP/DNS/NAT/PAT/ACL policies, and analyzed traffic with Wireshark and Windows PowerShell.",
+        nodes: [
+          {
+            title: "MikroTik Edge Gateway",
+            sub: "WAN • Masquerade NAT • OSPF",
+            badge: "MIKROTIK ROUTEROS",
+            note: "Edge gateway performing source NAT/PAT for internal subnets, firewall filtering, and OSPF peering.",
+            code: `/ip address add address=192.168.100.2/24 interface=ether1-WAN
+/ip firewall nat add chain=srcnat out-interface=ether1-WAN action=masquerade
+/routing ospf instance add name=ospf-core router-id=1.1.1.1`
+          },
+          {
+            title: "Cisco IOS Core Router",
+            sub: "Multi-Area OSPF • ACL Security",
+            badge: "CISCO IOS CLI",
+            note: "Core routing across OSPF areas with extended ACL policies controlling subnet reachability.",
+            code: `router ospf 10
+ router-id 2.2.2.2
+ network 10.0.0.0 0.0.0.3 area 0
+ network 10.10.0.0 0.0.255.255 area 10
+show ip ospf neighbor`
+          },
+          {
+            title: "L3 Switch & VLANs",
+            sub: "VLAN 10 / 20 / 30 • Trunking",
+            badge: "802.1Q SWITCHING",
+            note: "Segmented departments using VLANs and trunk links with Inter-VLAN routing.",
+            code: `vlan 10
+ name ADMIN
+vlan 20
+ name STAFF
+interface GigabitEthernet0/1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk`
+          },
+          {
+            title: "DHCP / DNS & Diagnostics",
+            sub: "IP Pools • Wireshark • PowerShell",
+            badge: "SERVICES & ANALYSIS",
+            note: "DHCP/DNS services and packet inspection using Wireshark and Windows PowerShell.",
+            code: `ip dhcp pool LAN_POOL
+ network 10.10.10.0 255.255.255.0
+ default-router 10.10.10.1
+ dns-server 8.8.8.8
+PS C:\\> Test-NetConnection 8.8.8.8 -InformationLevel Detailed`
+          }
+        ]
+      },
+      {
+        badge: "PROJECT 02 • DUAL-WAN & QOS",
+        title: "MikroTik Dual-WAN Failover & QoS Queue Lab",
+        tools: "MikroTik RouterOS • Recursive Routes • Mangle • Simple/PCQ Queues",
+        desc: "Designed redundant ISP1 and ISP2 WAN links with recursive failover monitoring, policy/mangle marks, and per-client bandwidth allocation in MikroTik RouterOS.",
+        nodes: [
+          {
+            title: "ISP1 Primary Uplink",
+            sub: "Gateway 203.0.113.1 • Distance 1",
+            badge: "PRIMARY WAN",
+            note: "Primary ISP interface monitored via recursive check-gateway for automatic failover.",
+            code: `/ip route
+add dst-address=8.8.8.8 gateway=203.0.113.1 scope=10
+add dst-address=0.0.0.0/0 gateway=8.8.8.8 target-scope=11 check-gateway=ping distance=1`
+          },
+          {
+            title: "ISP2 Backup Uplink",
+            sub: "Gateway 198.51.100.1 • Distance 2",
+            badge: "FAILOVER WAN",
+            note: "Backup WAN link takes over seamlessly when ISP1 becomes unreachable.",
+            code: `/ip route
+add dst-address=0.0.0.0/0 gateway=198.51.100.1 distance=2 comment="Backup ISP Failover"
+/ip route print where active=yes`
+          },
+          {
+            title: "Mangle & NAT Rules",
+            sub: "Traffic Marking • Masquerade",
+            badge: "FIREWALL MANGLE",
+            note: "Marks LAN traffic and applies masquerade NAT across active WAN interfaces.",
+            code: `/ip firewall mangle
+add chain=prerouting src-address=192.168.50.0/24 action=mark-connection new-connection-mark=lan_conn passthrough=yes
+/ip firewall nat
+add chain=srcnat out-interface-list=WAN action=masquerade`
+          },
+          {
+            title: "Bandwidth Queue & Monitor",
+            sub: "Queue Tree / Simple Queue",
+            badge: "QOS & MONITORING",
+            note: "Prevents bandwidth saturation by capping heavy bulk transfers and prioritizing interactive traffic.",
+            code: `/queue simple
+add name="Office-LAN-Cap" target=192.168.50.0/24 max-limit=50M/50M priority=4/4
+/tool torch interface=ether1-WAN`
+          }
+        ]
+      },
+      {
+        badge: "PROJECT 03 • CAMPUS BACKBONE",
+        title: "Multi-Area OSPF & ACL Campus Backbone",
+        tools: "Cisco IOS • OSPF Area 0/10/20 • Summarization • Extended ACL",
+        desc: "Built a hierarchical campus routing design using OSPF Area 0 backbone, Area 10/20 branches, route summarization, and extended ACLs to restrict unauthorized subnet access.",
+        nodes: [
+          {
+            title: "Backbone Router (Area 0)",
+            sub: "ABR • Route Summarization",
+            badge: "OSPF BACKBONE",
+            note: "Acts as Area Border Router summarizing internal campus prefixes into Area 0.",
+            code: `router ospf 1
+ router-id 10.255.255.1
+ area 10 range 172.16.10.0 255.255.255.0
+ area 20 range 172.16.20.0 255.255.255.0`
+          },
+          {
+            title: "Academic Block (Area 10)",
+            sub: "172.16.10.0/24 • OSPF Auth",
+            badge: "CAMPUS AREA 10",
+            note: "Academic subnet participating in OSPF Area 10 with MD5 interface authentication.",
+            code: `interface GigabitEthernet0/1
+ ip address 172.16.10.1 255.255.255.0
+ ip ospf message-digest-key 1 md5 CampusOspfKey2026
+ ip ospf authentication message-digest`
+          },
+          {
+            title: "Lab & Guest Segment (Area 20)",
+            sub: "172.16.20.0/24 • Guest Isolation",
+            badge: "CAMPUS AREA 20",
+            note: "Isolates guest/lab traffic from core administrative servers via ACLs.",
+            code: `ip access-list extended RESTRICT_GUEST_MGMT
+ deny   ip 172.16.20.0 0.0.0.255 172.16.99.0 0.0.0.255 log
+ permit ip any any`
+          },
+          {
+            title: "OSPF Table Verification",
+            sub: "show ip route ospf • Neighbors",
+            badge: "VERIFICATION CLI",
+            note: "Commands used to verify OSPF neighbor state FULL and inter-area route propagation.",
+            code: `show ip ospf neighbor
+show ip route ospf
+show access-lists RESTRICT_GUEST_MGMT`
+          }
+        ]
+      },
+      {
+        badge: "PROJECT 04 • LINUX & DMZ",
+        title: "Linux DHCP, DNS & Firewall DMZ Lab",
+        tools: "Linux CLI • Permissions & Users • DHCP/DNS • DMZ Firewall",
+        desc: "Administered Linux server networking, user/group permissions, local DNS/DHCP services, and DMZ firewall rules to protect internal infrastructure.",
+        nodes: [
+          {
+            title: "Linux Server Core",
+            sub: "CLI • Users & File Permissions",
+            badge: "LINUX ADMIN",
+            note: "Configured network interfaces, sudoers/users, and strict file/directory permissions.",
+            code: `ip a
+sudo adduser netadmin
+sudo chmod 640 /etc/netplan/01-netcfg.yaml
+sudo netplan apply`
+          },
+          {
+            title: "DHCP & DNS Service",
+            sub: "IP Leasing • Name Resolution",
+            badge: "NETWORK SERVICES",
+            note: "Verified DHCP client leases and internal/external DNS resolution on Linux.",
+            code: `dig @127.0.0.1 internal.mitul.local
+cat /etc/resolv.conf
+systemctl status systemd-resolved --no-pager`
+          },
+          {
+            title: "DMZ Zone & Policy",
+            sub: "192.168.200.0/28 • Segregated",
+            badge: "DMZ SEGMENT",
+            note: "Places public-facing services in a DMZ so a compromised service cannot directly enter internal LAN.",
+            code: `sudo sysctl -w net.ipv4.ip_forward=1
+sudo iptables -t nat -A POSTROUTING -s 192.168.200.0/28 -o eth0 -j MASQUERADE`
+          },
+          {
+            title: "Firewall Filter Rules",
+            sub: "Stateful Inspection • Drop Policy",
+            badge: "PERIMETER SECURITY",
+            note: "Allows established/related sessions and restricts unsolicited inbound traffic.",
+            code: `sudo iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+sudo iptables -L -n -v`
+          }
+        ]
+      },
+      {
+        badge: "PROJECT 05 • PACKET ANALYSIS",
+        title: "Wireshark & PowerShell Packet Diagnostics",
+        tools: "Wireshark • Windows PowerShell • Packet Tracer • GNS3",
+        desc: "Diagnosed routing loops, DHCP/DNS delays, and packet drops by capturing live frames in Wireshark and running network diagnostics in Windows PowerShell.",
+        nodes: [
+          {
+            title: "Wireshark Capture Engine",
+            sub: "OSPF • ARP • DHCP • TCP Filters",
+            badge: "WIRESHARK ANALYSIS",
+            note: "Display filters used to isolate control-plane hellos, DHCP handshakes, and retransmissions.",
+            code: `# Wireshark Display Filters
+ospf || arp || bootp || dns
+tcp.analysis.retransmission || tcp.analysis.duplicate_ack`
+          },
+          {
+            title: "PowerShell Connectivity Check",
+            sub: "Test-NetConnection • Resolve-DnsName",
+            badge: "POWERSHELL CLI",
+            note: "Tests TCP ports, ICMP reachability, and DNS resolution from Windows endpoints.",
+            code: `PS C:\\> Resolve-DnsName google.com -Type A
+PS C:\\> Test-NetConnection -ComputerName 10.0.0.1 -Port 22`
+          },
+          {
+            title: "Routing & ARP Inspection",
+            sub: "Get-NetRoute • Get-NetNeighbor",
+            badge: "HOST TABLE AUDIT",
+            note: "Audits local IP routes and ARP neighbor mappings to spot gateway or MAC mismatches.",
+            code: `PS C:\\> Get-NetRoute -AddressFamily IPv4 | Where-Object {$_.DestinationPrefix -like "10.*"}
+PS C:\\> Get-NetNeighbor -AddressFamily IPv4`
+          },
+          {
+            title: "Bottleneck Resolution Log",
+            sub: "MTU • Latency • ACL Hit Count",
+            badge: "ROOT CAUSE REPORT",
+            note: "Correlates RTT spikes and dropped packets with ACL rules or interface errors.",
+            code: `PS C:\\> tracert -d 8.8.8.8
+PS C:\\> ping -n 10 -l 1472 10.0.0.1`
+          }
+        ]
+      }
+    ];
+
+    let currentProjIdx = 0;
+    let currentNodeIdx = 0;
+
+    function getInitialProjectIndex() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const p = Number(params.get('project'));
+        if (!Number.isNaN(p) && p >= 0 && p < networkingProjects.length) {
+          return p;
+        }
+      } catch (_) {}
+      return 0;
+    }
+
+    function renderTopProjectTabs() {
+      const container = document.getElementById('project-tabs-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      networkingProjects.forEach((proj, idx) => {
+        const isActive = idx === currentProjIdx;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.onclick = () => loadProject(idx);
+        btn.className = isActive
+          ? 'text-left px-4 py-3 rounded-xl font-mono text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-400 shadow-lg shadow-cyan-500/15 transition-all'
+          : 'text-left px-4 py-3 rounded-xl font-mono text-xs font-medium bg-slate-900/90 text-slate-300 border border-slate-700/80 hover:border-cyan-400/50 transition-all';
+        btn.textContent = `0${idx + 1}. ${proj.title}`;
+        container.appendChild(btn);
+      });
+    }
+
+    function loadProject(projIdx) {
+      currentProjIdx = projIdx;
+      currentNodeIdx = 0;
+      const proj = networkingProjects[projIdx] || networkingProjects[0];
+
+      renderTopProjectTabs();
+
+      const badgeEl = document.getElementById('active-proj-badge');
+      const toolsEl = document.getElementById('active-proj-tools');
+      const titleEl = document.getElementById('active-proj-title');
+      const descEl = document.getElementById('active-proj-desc');
+
+      if (badgeEl) badgeEl.textContent = proj.badge;
+      if (toolsEl) toolsEl.textContent = proj.tools;
+      if (titleEl) titleEl.textContent = proj.title;
+      if (descEl) descEl.textContent = proj.desc;
+
+      proj.nodes.forEach((n, i) => {
+        const nTitle = document.getElementById(`proj-node-${i}-title`);
+        const nSub = document.getElementById(`proj-node-${i}-sub`);
+        if (nTitle) nTitle.textContent = n.title;
+        if (nSub) nSub.textContent = n.sub;
+      });
+
+      const btnWrap = document.getElementById('project-node-buttons');
+      if (btnWrap) {
+        btnWrap.innerHTML = '';
+        proj.nodes.forEach((n, i) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.id = `node-switch-btn-${i}`;
+          b.onclick = () => selectProjectNode(i);
+          b.className = 'px-3 py-1.5 rounded-lg text-xs font-mono bg-slate-900 text-slate-400 border border-slate-700 hover:border-cyan-400/50 transition-all';
+          b.textContent = n.title;
+          btnWrap.appendChild(b);
+        });
+      }
+
+      selectProjectNode(0);
+    }
+
+    function selectProjectNode(nodeIdx) {
+      currentNodeIdx = nodeIdx;
+      const proj = networkingProjects[currentProjIdx] || networkingProjects[0];
+      const node = proj.nodes[nodeIdx] || proj.nodes[0];
+
+      const bEl = document.getElementById('node-cli-badge');
+      const tEl = document.getElementById('node-cli-title');
+      const nEl = document.getElementById('node-cli-note');
+      const cEl = document.getElementById('node-cli-code');
+
+      if (bEl) bEl.textContent = node.badge;
+      if (tEl) tEl.textContent = node.title;
+      if (nEl) nEl.textContent = node.note;
+      if (cEl) cEl.textContent = node.code;
+
+      proj.nodes.forEach((_, i) => {
+        const rect = document.getElementById(`proj-node-${i}`);
+        if (rect) {
+          rect.setAttribute('stroke', i === nodeIdx ? '#06B6D4' : '#334155');
+          rect.setAttribute('stroke-width', i === nodeIdx ? '2.8' : '2');
+        }
+        const switchBtn = document.getElementById(`node-switch-btn-${i}`);
+        if (switchBtn) {
+          switchBtn.className = i === nodeIdx
+            ? 'px-3 py-1.5 rounded-lg text-xs font-mono bg-cyan-500/20 text-cyan-300 border border-cyan-400/60 transition-all'
+            : 'px-3 py-1.5 rounded-lg text-xs font-mono bg-slate-900 text-slate-400 border border-slate-700 hover:border-cyan-400/50 transition-all';
+        }
+      });
+    }
+
+    function copyActiveProjectCLI() {
+      const node = networkingProjects[currentProjIdx].nodes[currentNodeIdx];
+      const textarea = document.createElement('textarea');
+      textarea.value = node.code;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        showToast(`${node.title} CLI copied!`);
+      } catch (e) {
+        showToast('Copy failed');
+      }
+      document.body.removeChild(textarea);
+    }
+
+    function showToast(msg) {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const toast = document.createElement('div');
+      toast.className = 'pointer-events-auto flex items-center gap-2 px-4 py-3 rounded-xl bg-slate-900/95 border border-emerald-400/50 text-emerald-300 font-mono text-xs shadow-xl';
+      const icon = document.createElement('i');
+      icon.className = 'fa-solid fa-circle-check text-emerald-400';
+      const span = document.createElement('span');
+      span.textContent = String(msg || '');
+      toast.appendChild(icon);
+      toast.appendChild(span);
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 2600);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadProject(getInitialProjectIndex());
+    });
+  </script>
+</body>
+</html>
