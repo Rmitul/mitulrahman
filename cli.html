@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cisco CLI Mode - ফুলস্ক্রিন টার্মিনাল</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #050811;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .cli-page-header {
+      background: #0d1220;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 0.6rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .cli-full-container {
+      flex: 1;
+      padding: 1rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      max-width: 1300px;
+      margin: 0 auto;
+      width: 100%;
+      height: calc(100vh - 65px);
+    }
+    .terminal-window.fullscreen {
+      flex: 1;
+      height: 100%;
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+    }
+    .terminal-window.fullscreen .terminal-body {
+      flex: 1;
+      max-height: none;
+      min-height: 0;
+    }
+    .quick-chips-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      overflow-x: auto;
+      padding: 0.4rem 0;
+    }
+    .quick-chips-bar::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top bar in CLI Mode -->
+  <header class="cli-page-header">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <a href="index.html" class="brand" style="font-size: 1.05rem;">
+        <div class="brand-icon" style="width: 30px; height: 30px; font-size: 0.9rem;">⚡</div>
+        <div class="brand-text">mitul<span>NetCLI</span></div>
+      </a>
+      <span style="color: #64748b; font-size: 0.8rem;">| Terminal Mode</span>
+    </div>
+
+    <!-- Quick keyword chips -->
+    <div class="quick-chips-bar">
+      <span style="font-size: 0.75rem; color: #64748b; white-space: nowrap;">ক্লিক করে চালান:</span>
+      <button class="tag-btn featured" onclick="window.fullTerm.runCommand('routing')">🔀 routing</button>
+      <button class="tag-btn" onclick="window.fullTerm.runCommand('vlan')">🏷️ vlan</button>
+      <button class="tag-btn" onclick="window.fullTerm.runCommand('inter-vlan')">🔌 intar vlan</button>
+      <button class="tag-btn" onclick="window.fullTerm.runCommand('satik')">📌 satik</button>
+      <button class="tag-btn" onclick="window.fullTerm.runCommand('rip')">⚡ rip</button>
+      <button class="tag-btn" onclick="window.fullTerm.runCommand('ospf')">🚀 ospf</button>
+      <button class="tag-btn" onclick="window.fullTerm.runCommand('eigrp')">🛡️ eigrp</button>
+      <button class="tag-btn" onclick="window.fullTerm.runCommand('dns')">🌍 dns</button>
+      <button class="tag-btn" onclick="window.fullTerm.runCommand('dhcp')">💻 dhcp</button>
+      <button class="tag-btn" onclick="window.fullTerm.runCommand('acl')">🛡️ acl</button>
+      <button class="tag-btn" onclick="window.fullTerm.runCommand('daynamik')">🌐 daynamik</button>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+      <a href="commands.html" class="btn-secondary" style="padding: 0.45rem 0.9rem; font-size: 0.85rem;">
+        <span>📖 চিট শিট পেজ</span>
+      </a>
+      <a href="index.html" class="btn-secondary" style="padding: 0.45rem 0.9rem; font-size: 0.85rem;">
+        <span>🏠 হোম পেজ</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Fullscreen Terminal Container -->
+  <main class="cli-full-container">
+    <div id="fullTerminal" style="height: 100%; display: flex; flex-direction: column;"></div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="js/commands-data.js"></script>
+  <script src="js/terminal.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      window.fullTerm = window.initNetTerminal("fullTerminal", {
+        defaultPrompt: "Router#"
+      });
+
+      // Modify wrapper class for full height
+      const termWin = document.querySelector("#fullTerminal .terminal-window");
+      if (termWin) {
+        termWin.classList.add("fullscreen");
+      }
+
+      // Check if URL has a ?cmd= query param
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryCmd = urlParams.get("cmd");
+      if (queryCmd) {
+        setTimeout(() => {
+          window.fullTerm.runCommand(queryCmd);
+        }, 300);
+      }
+    });
+  </script>
+</body>
+</html>
